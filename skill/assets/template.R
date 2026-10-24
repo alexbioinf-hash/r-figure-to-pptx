@@ -1,5 +1,5 @@
 # =====================================================================
-# Figure R -> PowerPoint avec export::graph2ppt()
+# R figure -> PowerPoint with export::graph2ppt()
 # =====================================================================
 
 # ---- 1. Packages ----------------------------------------------------
@@ -17,38 +17,38 @@ if (!requireNamespace("export", quietly = TRUE)) {
 library(ggplot2)
 library(export)
 
-# ---- 2. Données -----------------------------------------------------
-# Remplacer par les données de l'utilisateur, par ex. :
-# df <- read.csv("mes_donnees.csv")
+# ---- 2. Data --------------------------------------------------------
+# Replace with the user's data, e.g.:
+# df <- read.csv("my_data.csv")
 df <- mtcars
 df$cyl <- factor(df$cyl)
 
 # ---- 3. Figure ------------------------------------------------------
 p <- ggplot(df, aes(x = wt, y = mpg, colour = cyl)) +
   geom_point(size = 3) +
-  labs(x = "Poids (1000 lb)", y = "Consommation (miles/gallon)",
-       colour = "Cylindres") +
+  labs(x = "Weight (1000 lb)", y = "Fuel economy (miles/gallon)",
+       colour = "Cylinders") +
   theme_minimal(base_size = 16)
 
-print(p)  # aperçu (utile en session interactive)
+print(p)  # preview (useful in an interactive session)
 
-# ---- 4. Export PowerPoint ------------------------------------------
-# Taille en pouces ; vector.graphic = TRUE -> figure modifiable dans PowerPoint
+# ---- 4. PowerPoint export -------------------------------------------
+# Size in inches; vector.graphic = TRUE -> figure is editable in PowerPoint
 graph2ppt(x = p, file = "figure.pptx", width = 7, height = 5,
           append = FALSE, vector.graphic = TRUE)
 
-# Ajouter une 2e figure dans le même fichier (nouvelle diapo) :
+# Add a 2nd figure to the same file (new slide):
 # graph2ppt(x = p2, file = "figure.pptx", width = 7, height = 5, append = TRUE)
 
-# Variante graphique de base R (appeler graph2ppt juste après le plot) :
-# plot(mtcars$wt, mtcars$mpg, pch = 19, xlab = "Poids", ylab = "mpg")
+# Base R graphics variant (call graph2ppt right after the plot):
+# plot(mtcars$wt, mtcars$mpg, pch = 19, xlab = "Weight", ylab = "mpg")
 # graph2ppt(file = "figure_base.pptx", width = 7, height = 5)
 
-# ---- 5. Plan B : officer + rvg (si graph2ppt échoue) -----------------
+# ---- 5. Plan B: officer + rvg (if graph2ppt fails) ------------------
 # library(officer); library(rvg)
 # doc <- read_pptx()
 # doc <- add_slide(doc, layout = "Title and Content", master = "Office Theme")
 # doc <- ph_with(doc, dml(ggobj = p), location = ph_location_fullsize())
 # print(doc, target = "figure_officer.pptx")
 
-cat("Fichier créé :", normalizePath("figure.pptx"), "\n")
+cat("File created:", normalizePath("figure.pptx"), "\n")

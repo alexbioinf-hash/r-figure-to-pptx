@@ -1,73 +1,73 @@
 ---
 name: r-figure-to-pptx
-description: Crée une figure avec R (ggplot2 ou graphiques de base) puis l'exporte dans un fichier PowerPoint (.pptx) avec la fonction graph2ppt() du package R "export". Utilise ce skill dès que l'utilisateur veut faire un graphique / une figure / un plot en R et l'obtenir dans PowerPoint, une diapo, un .pptx, ou mentionne graph2ppt, le package export, ggplot2 vers PowerPoint, ou une figure vectorielle modifiable dans PowerPoint, même s'il ne cite pas explicitement le package.
+description: Creates a figure in R (ggplot2 or base graphics) and exports it to a PowerPoint (.pptx) file with the graph2ppt() function from the R package "export". Use this skill whenever the user wants to make a chart / figure / plot in R and get it into PowerPoint, a slide, or a .pptx, or mentions graph2ppt, the export package, ggplot2 to PowerPoint, or an editable vector figure in PowerPoint, even if they do not name the package explicitly.
 ---
 
-# Figure R → PowerPoint avec `export::graph2ppt()`
+# R figure → PowerPoint with `export::graph2ppt()`
 
-Ce skill produit une figure en R puis l'exporte dans un `.pptx` où le graphique est **vectoriel et modifiable** dans PowerPoint (formes, textes et axes éditables), via `graph2ppt()` du package `export`.
+This skill produces a figure in R and exports it to a `.pptx` where the chart is **vector and editable** in PowerPoint (editable shapes, text and axes), using `graph2ppt()` from the `export` package.
 
 ## Workflow
 
-### 1. Comprendre la demande
-Récupère (en déduisant ce qui est déjà dans la conversation, sans interroger l'utilisateur inutilement) :
-- les **données** (fichier CSV/Excel uploadé, data.frame collé, ou jeu de données intégré à R) ;
-- le **type de figure** (nuage de points, barres, boxplot, courbes, histogramme, etc.) ;
-- les variables en x / y / couleur / facette, les titres, les unités ;
-- la **taille** voulue sur la diapo (par défaut 7 × 5 pouces ≈ 18 × 12,7 cm).
+### 1. Understand the request
+Gather the following (inferring what is already in the conversation, without needlessly questioning the user):
+- the **data** (uploaded CSV/Excel file, pasted data.frame, or a dataset built into R);
+- the **type of figure** (scatter plot, bars, boxplot, lines, histogram, etc.);
+- the x / y / colour / facet variables, titles and units;
+- the desired **size** on the slide (default 7 × 5 inches ≈ 18 × 12.7 cm).
 
-Si une information manque et qu'un choix raisonnable existe, fais-le et dis-le ; ne pose qu'une question si la demande est vraiment ambiguë.
+If some information is missing and a reasonable choice exists, make it and say so; ask a question only if the request is truly ambiguous.
 
-### 2. Vérifier l'environnement
+### 2. Check the environment
 ```bash
 Rscript --version
 ```
-- **R est disponible** : exécute le script toi-même (étapes 3 à 5).
-- **R n'est pas disponible** (cas fréquent dans un simple chat) : écris quand même le script `.R` complet, donne-le à l'utilisateur et explique comment le lancer chez lui (RStudio → *Source*, ou `Rscript figure.R`).
+- **R is available**: run the script yourself (steps 3 to 5).
+- **R is not available** (common in a plain chat): still write the complete `.R` script, give it to the user and explain how to run it locally (RStudio → *Source*, or `Rscript figure.R`).
 
-### 3. Installer les packages si besoin
-Utilise le bloc d'installation de `assets/template.R`. Points importants :
-- `export` s'installe depuis CRAN, et à défaut depuis GitHub : `remotes::install_github("tomwenseleers/export")`.
-- Il dépend de `officer`, `rvg` et `flextable` (installés automatiquement, mais prévoir du temps).
-- Charger `library(export)` **après** ggplot2 est sans risque ; ne pas mélanger avec un autre package qui masque `graph2ppt`.
+### 3. Install packages if needed
+Use the installation block from `assets/template.R`. Key points:
+- `export` installs from CRAN, and otherwise from GitHub: `remotes::install_github("tomwenseleers/export")`.
+- It depends on `officer`, `rvg` and `flextable` (installed automatically, but allow some time).
+- Loading `library(export)` **after** ggplot2 is safe; do not mix it with another package that masks `graph2ppt`.
 
-### 4. Écrire le script
-Pars de `assets/template.R` et adapte-le. Règles :
-- **ggplot2 de préférence** : stocke le graphique dans un objet (`p <- ggplot(...) + ...`) puis exporte avec `graph2ppt(x = p, ...)`. C'est la méthode la plus fiable, y compris en `Rscript` non interactif.
-- **Graphique de base R** : trace le plot, puis appelle `graph2ppt(file = ..., width = ..., height = ...)` *juste après* (sans `x`) pour capturer le périphérique graphique courant.
-- Choisis un thème lisible en présentation : `theme_minimal(base_size = 16)` ou `theme_classic(base_size = 16)`, polices ≥ 14 pt, couleurs distinguables (palette viridis ou ColorBrewer), légendes et axes avec unités.
-- Une figure par diapo. Pour **plusieurs figures dans le même fichier**, utilise `append = TRUE` à partir du 2ᵉ appel (voir template).
+### 4. Write the script
+Start from `assets/template.R` and adapt it. Rules:
+- **Prefer ggplot2**: store the plot in an object (`p <- ggplot(...) + ...`) then export with `graph2ppt(x = p, ...)`. This is the most reliable method, including with non-interactive `Rscript`.
+- **Base R graphics**: draw the plot, then call `graph2ppt(file = ..., width = ..., height = ...)` *right after* (without `x`) to capture the current graphics device.
+- Choose a theme that is readable in a presentation: `theme_minimal(base_size = 16)` or `theme_classic(base_size = 16)`, fonts ≥ 14 pt, distinguishable colours (viridis or ColorBrewer palette), legends and axes with units.
+- One figure per slide. For **several figures in the same file**, use `append = TRUE` from the 2nd call onwards (see template).
 
-### 5. Appel d'export
-Signature utile :
+### 5. Export call
+Useful signature:
 ```r
 graph2ppt(x = p, file = "figure.pptx", width = 7, height = 5,
           append = FALSE, vector.graphic = TRUE)
 ```
-| Argument | Rôle |
+| Argument | Role |
 |---|---|
-| `x` | objet ggplot (ou `NULL` = graphique courant) |
-| `file` | nom du fichier de sortie (`.pptx` ajouté si absent) |
-| `width`, `height` | taille en pouces |
-| `append` | `TRUE` = ajoute une diapo à un fichier existant |
-| `vector.graphic` | `TRUE` (défaut) = vectoriel modifiable ; `FALSE` = image bitmap (plus fidèle visuellement, non modifiable) |
-| `aspectr` | ratio largeur/hauteur à imposer |
+| `x` | ggplot object (or `NULL` = current graphic) |
+| `file` | output file name (`.pptx` added if missing) |
+| `width`, `height` | size in inches |
+| `append` | `TRUE` = adds a slide to an existing file |
+| `vector.graphic` | `TRUE` (default) = editable vector; `FALSE` = bitmap image (visually more faithful, not editable) |
+| `aspectr` | width/height ratio to enforce |
 
-### 6. Vérifier le résultat
-- Contrôle que le `.pptx` existe et que sa taille n'est pas nulle.
-- Si LibreOffice est présent (`soffice`), convertis en PDF/PNG pour vérifier visuellement la diapo.
-- Livre le `.pptx` à l'utilisateur (via l'outil de partage de fichiers si disponible) avec le script `.R` utilisé, pour qu'il puisse le relancer.
+### 6. Check the result
+- Check that the `.pptx` exists and its size is not zero.
+- If LibreOffice is present (`soffice`), convert to PDF/PNG to check the slide visually.
+- Deliver the `.pptx` to the user (through the file-sharing tool if available) together with the `.R` script used, so they can rerun it.
 
-## Problèmes fréquents
+## Common problems
 
-| Symptôme | Solution |
+| Symptom | Solution |
 |---|---|
-| Polices différentes dans PowerPoint | Utiliser une police présente sur la machine (Arial, Calibri) : `theme(text = element_text(family = "Arial"))` |
-| Rendu vectoriel étrange (transparences, `geom_smooth` avec bande, ggrepel) | Réessayer avec `vector.graphic = FALSE` (bitmap) |
-| Erreur d'installation de `export` | Installer d'abord `officer`, `rvg`, `flextable`, puis `remotes::install_github("tomwenseleers/export")` |
-| `graph2ppt` échoue avec un ggplot récent | Alternative directe avec `officer` + `rvg` : voir bloc « Plan B » du template |
-| Graphique de base R vide dans la diapo | Appeler `graph2ppt()` immédiatement après le plot, sans fermer le périphérique ; sinon passer à ggplot2 |
-| Fichier `.pptx` ouvert dans PowerPoint | Le fermer avant de relancer le script (verrouillage Windows) |
+| Different fonts in PowerPoint | Use a font installed on the machine (Arial, Calibri): `theme(text = element_text(family = "Arial"))` |
+| Odd vector rendering (transparency, `geom_smooth` with ribbon, ggrepel) | Retry with `vector.graphic = FALSE` (bitmap) |
+| `export` installation error | Install `officer`, `rvg`, `flextable` first, then `remotes::install_github("tomwenseleers/export")` |
+| `graph2ppt` fails with a recent ggplot | Direct alternative with `officer` + `rvg`: see the "Plan B" block of the template |
+| Empty base R plot on the slide | Call `graph2ppt()` immediately after the plot, without closing the device; otherwise switch to ggplot2 |
+| `.pptx` file open in PowerPoint | Close it before rerunning the script (Windows file lock) |
 
-## Format de réponse à l'utilisateur
-Reste bref : dis quelle figure a été produite, donne le fichier `.pptx` et le script `.R`, et signale tout choix fait par défaut (taille, thème, palette). Réponds dans la langue de l'utilisateur.
+## Response format for the user
+Keep it brief: say which figure was produced, provide the `.pptx` file and the `.R` script, and point out any default choices made (size, theme, palette). Reply in the user's language.
