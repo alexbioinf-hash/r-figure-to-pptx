@@ -5,6 +5,7 @@
 ![ggplot2](https://img.shields.io/badge/ggplot2-compatible-brightgreen)
 ![PowerPoint](https://img.shields.io/badge/Export-PowerPoint-B7472A?logo=microsoftpowerpoint&logoColor=white)
 ![Claude Skill](https://img.shields.io/badge/Claude-Skill-D97757)
+[![Downloads](https://img.shields.io/github/downloads/alexbioinf-hash/r-figure-to-pptx/total?label=downloads&color=blue)](https://github.com/alexbioinf-hash/r-figure-to-pptx/releases)
 [![GitHub stars](https://img.shields.io/github/stars/alexbioinf-hash/r-figure-to-pptx?style=social)](https://github.com/alexbioinf-hash/r-figure-to-pptx/stargazers)
 
 A **Claude skill** that creates a figure with **R** (ggplot2 or base graphics) and exports it to a **PowerPoint** file with `graph2ppt()` from the [`export`](https://github.com/tomwenseleers/export) package. The figure is **vector and editable** directly in PowerPoint.
