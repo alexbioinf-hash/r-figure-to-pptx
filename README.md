@@ -9,8 +9,6 @@
 
 Un **skill Claude** qui crée une figure avec **R** (ggplot2 ou graphiques de base) puis l'exporte dans un **PowerPoint** avec `graph2ppt()` du package [`export`](https://github.com/tomwenseleers/export). La figure est **vectorielle et modifiable** directement dans PowerPoint.
 
-> 📸 *Ajoute ici une capture d'écran ou un GIF : demande à Claude → figure → diapo.*
-
 ## Installation
 
 1. Télécharge [`r-figure-to-pptx.skill`](./r-figure-to-pptx.skill) (ou la page *Releases*).
